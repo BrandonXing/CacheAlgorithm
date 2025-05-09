@@ -1,3 +1,4 @@
+#pragma once
 #include "KLruCache.h"
 #include <cmath>
 #include <cstring>

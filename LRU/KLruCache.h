@@ -1,10 +1,12 @@
+#pragma once
 #include "LruCache.h"
 
 
 template <typename Key, typename Value>
 class KLruCache : public LruCache<Key, Value> {
     public:
-        KLruCache(int capacity, int historyCapacity, int k) : LruCache<Key, Value>(capacity), k_(k), historyList_(std::make_unique<KLruCache<Key, int>> (historyCapacity)) {}
+        KLruCache(int capacity, int historyCapacity, int k) : LruCache<Key, Value>(capacity), k_(k),
+            historyList_(std::make_unique<KLruCache<Key, int>> (historyCapacity)) {}
 
         Value get(Key key){
             int historyCount = historyList_->get(key);
