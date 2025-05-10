@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <memory>
+#include "AgedLfuCache.h"
 #include "../LRU/LruCache.h"
 
 template<typename Key, typename Value> class LfuCache;
@@ -69,7 +70,9 @@ class LfuList {
 
 template<typename Key, typename Value>
 class LfuCache {
+
     private:
+        friend class AgedLfuCache<Key, Value>;
         using Node = LfuListNode<Key, Value>;
         using NodePtr = std::shared_ptr<Node>;
         using NodeMap = std::unordered_map<Key, NodePtr>;
