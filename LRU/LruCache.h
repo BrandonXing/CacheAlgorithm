@@ -1,3 +1,4 @@
+#pragma once
 #include <memory>
 #include <mutex>
 #include <unordered_map>
@@ -54,8 +55,8 @@ class LruCache{
         int capacity_;
         NodeMap nodeMap_;
         NodePtr nodePtr_;
-        ListNodeType head_;
-        ListNodeType tail_;
+        NodePtr head_;
+        NodePtr tail_;
 
     public:
         LruCache(int capacity): capacity_(capacity) {
@@ -85,7 +86,7 @@ class LruCache{
             if(it != nodeMap_.end() ){
                 // 刚被访问过，所以移动到最近访问过的节点
                 moveMostRecentNode(it->second);;
-                value = it->second->getValue;
+                value = it->second->getValue();
                 return true;
             }
 
@@ -111,8 +112,8 @@ class LruCache{
             head_ = std::make_shared<ListNodeType>(Key(), Value());
             tail_ = std::make_shared<ListNodeType>(Key(), Value());
 
-            head_.next = tail_;
-            tail_.prev = head_;
+            head_->next = tail_;
+            tail_->prev = head_;
         }
 
         void updateExistNode(NodePtr node, const Value& value){
@@ -157,7 +158,7 @@ class LruCache{
 
         void removeLeastRecentNode(){
             //因为最近访问的节点在尾部，所以头部节点是最近未访问的
-            NodePtr lastRecentNode = head_.next;
+            NodePtr lastRecentNode = head_->next;
             removeNode(lastRecentNode);
             nodeMap_.erase(lastRecentNode->getKey());
 
