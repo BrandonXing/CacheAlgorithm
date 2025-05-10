@@ -9,7 +9,7 @@ template<typename Key, typename Value> class LfuCache;
 template<typename Key, typename Value>
 class LfuListNode: public ListNode<Key, Value> {
     public:
-        LfuListNode(Key key, Value value): ListNode<Key, Value>(key, value), freq_(0) {};
+        LfuListNode(Key key, Value value): ListNode<Key, Value>(key, value), freq_(1) {};
         ~LfuListNode() {};
     private:
         int freq_;
@@ -34,7 +34,7 @@ class LfuList {
         };
 
         bool isEmpty() {
-            return head_ == tail_;
+            return head_->next == tail_;
         }
 
         void addNode(NodePtr node) {
@@ -108,6 +108,7 @@ class LfuCache {
             if (node == nullptr) {
                 return;
             }
+            ++ node->freq_;
             if (node->freq_ - 1 == minFreq_ && freqMap_[node->freq_ - 1]->isEmpty()) {
                 // 如果当前node的访问频次如果等于minFreq+1，并且其前驱链表为空，则说明
                 // freqMap_[node->freq_-1]链表因node的迁移已经空了，需要更新最小访问频次
@@ -130,10 +131,9 @@ class LfuCache {
                 it->second->value_ = value;
                 // 找到后需要 1.把Node从当前FreqList删除 2.添加到freq_+1的FreqList里 3.freq_+1
                 removeNodeFreqlist(it->second);
-                ++it->second->freq_;
-                addNodeFreqList(it->second);
-
                 updateNodeFreq(it->second);
+                addNodeFreqlist(it->second);
+
                 return;
             }else {
                 // 缓存中没找到

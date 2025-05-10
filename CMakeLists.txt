@@ -10,4 +10,3 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Add the executable
 add_subdirectory(LFU)
 add_subdirectory(LRU)
-add_executable(CacheAlgorithm main.cpp)
