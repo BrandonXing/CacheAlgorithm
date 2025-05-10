@@ -36,7 +36,7 @@ class AgedLfuCache: public LfuCache<Key, Value> {
                 return;
             }
             for (auto it = this->valueMap_.begin(); it != this->valueMap_.end(); it++) {
-                if (it->second) // 检查node是否为空
+                if (!it->second) // 检查node是否为空
                     continue;
                 NodePtr node = it->second;
 
@@ -94,9 +94,8 @@ class AgedLfuCache: public LfuCache<Key, Value> {
                 it->second->value_ = value;
                 // 找到后需要 1.把Node从当前FreqList删除 2.添加到freq_+1的FreqList里 3.freq_+1
                 removeNodeFreqlist(it->second);
-                ++it->second->freq_;
-                addNodeFreqList(it->second);
                 updateNodeFreq(it->second);
+                addNodeFreqlist(it->second);
                 return;
             }else {
                 // 缓存中没找到
@@ -122,9 +121,8 @@ class AgedLfuCache: public LfuCache<Key, Value> {
             auto it = this->valueMap_.find(key);
             if (it != this->valueMap_.end()) {
                 removeNodeFreqlist(it->second);
-                ++it->second->freq_;
-                addNodeFreqlist(it->second);
                 updateNodeFreq(it->second);
+                addNodeFreqlist(it->second);
                 increaseFreq();
                 return true;
             }
